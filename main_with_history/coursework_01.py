@@ -140,11 +140,11 @@ class YaDisk:
 
 if __name__ == '__main__':
     # Создаём объект vk_user в класcе VkClass с нужным токеном
-    vk_user = VkClass('5b854648c30a6e6ccf8387c2203d290458563166cea035749c1479dc8b8568282c5918f9b7c2a4e1b9734')
+    vk_user = VkClass('...')
     # Создаём объект ya_disk_user в классе YaDisk с нужным токеном
-    ya_disk_user = YaDisk('AQAAAABAsTdkAADLW2HDHm7tHkqVnrowtMgORCU')
+    ya_disk_user = YaDisk('...')
     # Указываем необходимые для копирования данные:
-    user_id = '926808'  # Указываем ID пользователя, чьи фото хотим скачать
+    user_id = '...'  # Указываем ID пользователя, чьи фото хотим скачать
     count_photo = '50'  # Указываем кол-во фотографий, сколько мы хотим сохранить
     directory = 'Photos_new' # Указываем название папки на Я.Диск куда мы сохраняем фотографии
 
