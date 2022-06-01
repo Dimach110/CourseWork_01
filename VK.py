@@ -45,10 +45,20 @@ class VkClass:
         response = requests.get(f'{self.url}/groups.search', params={**self.params, **sg_params})
         return response.json()
 
-    def photo_get(self, user_id, count):
+    def photo_get(self, user_id, count, type_photo='wall'):
+        '''
+
+        :param user_id: ID пользователя
+        :param count: Количество загружаемых фотографий
+        :param type_photo: Тип фотографий
+            'wall' - фотографии со стены,
+            'profile' - фотографии профиля,
+            'saved' - сохраненные фотографии. Возвращается только с ключом доступа пользователя
+        :return: данные запроса в формате .json
+        '''
         info_params = {
             'owner_id': user_id,
-            'album_id': 'wall',
+            'album_id': type_photo,
             'rev': '0',
             'extended': '1',
             'photo_sizes': '0',
@@ -56,3 +66,4 @@ class VkClass:
         }
         response = requests.get(f'{self.url}/photos.get', params={**self.params, **info_params})
         return response.json()
+
