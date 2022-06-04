@@ -4,6 +4,33 @@ import requests
 import json
 
 
+def logs_upload_json(file_name, size):
+    try:
+        with open('logs_file.json', encoding='utf-8') as f_json:
+            data_json = json.load(f_json)
+            data_json += [{'file_name': f'{file_name}.jpg', 'size': size}]
+        with open('logs_file.json', 'w') as f_json:
+            json.dump(data_json, f_json, ensure_ascii=False, indent=2)
+    except FileNotFoundError:
+        with open('logs_file.json', 'w') as f_json:
+            data_json = [{'file_name': f'{file_name}.jpg', 'size': size}]
+            json.dump(data_json, f_json, ensure_ascii=False, indent=2)
+    return data_json
+
+def logs_upload_txt(file_name, folder_name, id):  # Функция для логирования действий в файл logs_file.txt
+    try:  # Использовал как проверку создан ли такой файл (возможно есть более простой вариант)
+        with open('logs_file.txt', 'r') as logs_f:
+            print(" ")
+    except FileNotFoundError:  # если файл отсутствует, то идёт запись первой строки
+        with open('logs_file.txt', 'w', encoding='utf-8') as logs_f:
+            #   Хотел, что бы сверху файла была такая надпись, без неё всё было бы проще
+            logs_f.write('Регистрации выполняемых действий по копированию фотографий:' + '\n')
+    # Дальше уже только добавляем в созданный файл
+    with open('logs_file.txt', 'a', encoding='utf-8') as logs_f:
+        logs_f.write(f'{id} {datetime.datetime.now()}: Загрузка файла {file_name}.jpg в папку {folder_name} прошла успешно'
+                     + '\n')
+        print(f'{datetime.datetime.now()}: Загрузка файла {file_name}.jpg в папку {folder_name} прошла успешно')
+
 class YaDisk:
     host = 'https://cloud-api.yandex.net'
 
@@ -52,32 +79,7 @@ class YaDisk:
         response = requests.post(url=url, params=params, headers=headers)
         response.raise_for_status()  # Запрашиваем статус
         if response.status_code == 202:  # При успешном результате заносим в лог файл через функцию логирования
-            self.logs_upload_txt(file_name, folder_name, id)
-            self.logs_upload_json(file_name, size)
+            logs_upload_txt(file_name, folder_name, id)
+            logs_upload_json(file_name, size)
 
-    def logs_upload_txt(self, file_name, folder_name, id):  # Функция для логирования действий в файл logs_file.txt
-        try:  # Использовал как проверку создан ли такой файл (возможно есть более простой вариант)
-            with open('logs_file.txt', 'r') as logs_f:
-                print(" ")
-        except FileNotFoundError:  # если файл отсутствует, то идёт запись первой строки
-            with open('logs_file.txt', 'w', encoding='utf-8') as logs_f:
-                #   Хотел, что бы сверху файла была такая надпись, без неё всё было бы проще
-                logs_f.write('Регистрации выполняемых действий по копированию фотографий:' + '\n')
-        # Дальше уже только добавляем в созданный файл
-        with open('logs_file.txt', 'a', encoding='utf-8') as logs_f:
-            logs_f.write(f'{id} {datetime.datetime.now()}: Загрузка файла {file_name}.jpg в папку {folder_name} прошла успешно'
-                         + '\n')
-            print(f'{datetime.datetime.now()}: Загрузка файла {file_name}.jpg в папку {folder_name} прошла успешно')
 
-    def logs_upload_json(self, file_name, size):
-        try:
-            with open('logs_file.json', encoding='utf-8') as f_json:
-                data_json = json.load(f_json)
-                data_json += [{'file_name': f'{file_name}.jpg', 'size': size}]
-            with open('logs_file.json', 'w') as f_json:
-                json.dump(data_json, f_json, ensure_ascii=False, indent=2)
-        except FileNotFoundError:
-            with open('logs_file.json', 'w') as f_json:
-                data_json = [{'file_name': f'{file_name}.jpg', 'size': size}]
-                json.dump(data_json, f_json, ensure_ascii=False, indent=2)
-        return data_json

@@ -19,10 +19,13 @@ class VkClass:
         response = requests.get(f'{self.url}/users.get', params={**self.params, **info_params}).json()
         return response
 
-    def user_search(self, q, sex, count=50, sort=0, ):
-        search_params = {
-            'q': q,
-            'fields': ' photo_id, verified, sex, bdate, city, country, home_town, has_photo, photo_50,'
+
+    def user_search(self, q=str, find=str ,count=50, sort=0, ):
+        '''Функция поиска профиля пользователя
+
+        :param q: Данные для строки поиска
+        :param find: Требуемые параметры (фильтр):
+                      ' photo_id, verified, sex, bdate, city, country, home_town, has_photo, photo_50,'
                       ' photo_100, photo_200_orig, photo_200, photo_400_orig, photo_max, photo_max_orig,'
                       ' online, lists, domain, has_mobile, contacts, site, education, universities, schools,'
                       ' status, last_seen, followers_count, common_count, occupation, nickname, relatives,'
@@ -30,8 +33,15 @@ class VkClass:
                       ' movies, tv, books, games, about, quotes, can_post, can_see_all_posts, can_see_audio,'
                       ' can_write_private_message, can_send_friend_request, is_favorite, is_hidden_from_feed,'
                       ' timezone, screen_name, maiden_name, crop_photo, is_friend, friend_status, career,'
-                      ' military, blacklisted, blacklisted_by_me',
-            'sex': sex
+                      ' military, blacklisted, blacklisted_by_me'
+        :param count: количество выводимых профилей
+        :param sort:
+        :return: response.json()
+        '''
+
+        search_params = {
+            'q': q,
+            'fields': find
         }
         response = requests.get(f'{self.url}/users.search', params={**self.params, **search_params})
         return response.json()
@@ -45,15 +55,14 @@ class VkClass:
         response = requests.get(f'{self.url}/groups.search', params={**self.params, **sg_params})
         return response.json()
 
-    def photo_get(self, user_id, count, type_photo='wall'):
+    def photo_get(self, user_id, type_photo='wall', count=10):
         '''
-
         :param user_id: ID пользователя
-        :param count: Количество загружаемых фотографий
         :param type_photo: Тип фотографий
             'wall' - фотографии со стены,
             'profile' - фотографии профиля,
             'saved' - сохраненные фотографии. Возвращается только с ключом доступа пользователя
+        :param count: Количество загружаемых фотографий
         :return: данные запроса в формате .json
         '''
         info_params = {
